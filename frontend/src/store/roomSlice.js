@@ -6,7 +6,7 @@ const initialState = {
     elements: [],
     redoStack: [],
     tool: 'pencil', // pencil, rectangle, circle, text
-    color: '#ffffff',
+    color: '#000000', // Changed to black so initial drawings are visible on white canvas
 };
 
 const roomSlice = createSlice({
