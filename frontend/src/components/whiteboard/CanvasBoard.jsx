@@ -67,13 +67,23 @@ const recognizeShape = (points) => {
 };
 
 // Helper to render any single element efficiently
-const RenderElement = React.memo(({ el }) => {
+const RenderElement = React.memo(({ el, isDraggable, onDragEnd }) => {
     const strokeColor = el.tool === 'eraser' ? '#ffffff' : el.color; // matches white bg
     const strokeWidth = el.tool === 'eraser' ? 20 : 3;
+
+    const commonProps = {
+        id: el.id,
+        draggable: isDraggable,
+        onDragEnd: (e) => onDragEnd(el.id, e.target.x(), e.target.y()),
+        // When dragging begins, Konva moves the visual element. We need to sync this.
+    };
 
     if (el.tool === 'pencil' || el.tool === 'eraser') {
         return (
             <Line
+                {...commonProps}
+                x={el.x || 0}
+                y={el.y || 0}
                 points={el.points}
                 stroke={strokeColor}
                 strokeWidth={strokeWidth}
@@ -87,6 +97,7 @@ const RenderElement = React.memo(({ el }) => {
     if (el.tool === 'rectangle') {
         return (
             <Rect
+                {...commonProps}
                 x={el.x}
                 y={el.y}
                 width={el.width}
@@ -99,6 +110,7 @@ const RenderElement = React.memo(({ el }) => {
     if (el.tool === 'circle') {
         return (
             <Circle
+                {...commonProps}
                 x={el.x}
                 y={el.y}
                 radius={el.radius}
@@ -110,6 +122,7 @@ const RenderElement = React.memo(({ el }) => {
     if (el.tool === 'text') {
         return (
             <Text
+                {...commonProps}
                 x={el.x}
                 y={el.y}
                 text={el.text}
@@ -120,6 +133,7 @@ const RenderElement = React.memo(({ el }) => {
     }
     return null;
 });
+
 
 export default function CanvasBoard({ socket, roomId }) {
     const { elements, tool, color, isSmartMode } = useSelector((state) => state.room);
@@ -236,16 +250,41 @@ export default function CanvasBoard({ socket, roomId }) {
         setCurrentElement(null);
     }, [currentElement, roomId, socket, dispatch, isSmartMode, tool]);
 
-    // Standard Layer with listening=false replaces deprecated FastLayer
+    const handleElementDragEnd = useCallback((id, newX, newY) => {
+        const element = elements.find(el => el.id === id);
+        if (!element) return;
+
+        const updatedElement = { ...element, x: newX, y: newY };
+        
+        // Sync with local state
+        dispatch({ type: 'room/updateOrAddElement', payload: updatedElement });
+        
+        // Sync with others and persist to DB
+        if (socket && roomId) {
+            socket.emit('draw-stroke', { roomId, strokeData: updatedElement });
+        }
+    }, [elements, dispatch, socket, roomId]);
+
+
+    // Standard Layer with listening dependent on tool
     const stableLayer = useMemo(() => {
+        const isDraggable = tool === 'pointer';
         return (
-            <Layer listening={false}>
+            <Layer listening={isDraggable}>
                 {elements.map((el) => {
-                    return <RenderElement key={el.id} el={el} />;
+                    return (
+                        <RenderElement 
+                            key={el.id} 
+                            el={el} 
+                            isDraggable={isDraggable} 
+                            onDragEnd={handleElementDragEnd}
+                        />
+                    );
                 })}
             </Layer>
         );
-    }, [elements]);
+    }, [elements, tool, handleElementDragEnd]);
+
 
     return (
         <div className="w-full h-full bg-white overflow-hidden cursor-crosshair">
