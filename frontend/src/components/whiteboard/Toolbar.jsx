@@ -72,8 +72,9 @@ export default function Toolbar({ socket, roomId }) {
     };
 
     return (
-        <div className="flex flex-row md:flex-col bg-white rounded-lg border border-gray-200 shadow-lg p-1.5 md:p-2 w-auto md:w-14 items-center">
-            <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1">
+        <div className="flex flex-row md:flex-col bg-white rounded-xl border border-gray-200 shadow-xl p-1.5 md:p-2 w-auto max-w-full md:w-14 items-center overflow-x-auto no-scrollbar">
+
+            <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 flex-shrink-0">
                 {tools.map((t) => {
                     const Icon = t.icon;
                     const isActive = tool === t.id;
@@ -92,7 +93,7 @@ export default function Toolbar({ socket, roomId }) {
 
             <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
-            <div className="flex flex-row md:flex-col items-center space-x-1 sm:space-x-2 md:space-x-0 md:space-y-2">
+            <div className="flex flex-row md:flex-col items-center space-x-1 sm:space-x-2 md:space-x-0 md:space-y-2 flex-shrink-0">
                 {colors.map((c) => (
                     <button
                         key={c}
@@ -106,7 +107,7 @@ export default function Toolbar({ socket, roomId }) {
 
             <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center flex-shrink-0">
                 <button
                     title="AI Smart Refine"
                     onClick={() => dispatch(toggleSmartMode())}
@@ -118,7 +119,7 @@ export default function Toolbar({ socket, roomId }) {
 
             <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
-            <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 items-center">
+            <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 items-center flex-shrink-0">
                 <button title="Undo" onClick={handleUndo} className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                     <Undo className="w-5 h-5" />
                 </button>
@@ -129,7 +130,7 @@ export default function Toolbar({ socket, roomId }) {
 
             <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
-            <div className="flex flex-col items-center space-y-1 mt-1 group relative">
+            <div className="flex flex-col items-center space-y-1 mt-1 group relative flex-shrink-0">
                 <button className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                     <Download className="w-5 h-5" />
                 </button>
