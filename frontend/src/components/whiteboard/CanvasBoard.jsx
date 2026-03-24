@@ -90,8 +90,10 @@ const RenderElement = React.memo(({ el, isDraggable, onDragEnd }) => {
                 tension={0.5}
                 lineCap="round"
                 lineJoin="round"
+                hitStrokeWidth={20}
                 globalCompositeOperation={el.tool === 'eraser' ? 'destination-out' : 'source-over'}
             />
+
         );
     }
     if (el.tool === 'rectangle') {
@@ -190,9 +192,20 @@ export default function CanvasBoard({ socket, roomId }) {
         }
 
         isDrawing.current = true;
+        const isFreehand = tool === 'pencil' || tool === 'eraser';
         const newElement = {
-            id: newId, userId: user?.id, tool, color, points: [pos.x, pos.y], x: pos.x, y: pos.y, width: 0, height: 0, radius: 0,
+            id: newId, 
+            userId: user?.id, 
+            tool, 
+            color, 
+            points: [pos.x, pos.y], 
+            x: isFreehand ? 0 : pos.x, 
+            y: isFreehand ? 0 : pos.y, 
+            width: 0, 
+            height: 0, 
+            radius: 0,
         };
+
         setCurrentElement(newElement);
 
         socket.emit('draw-stroke', { roomId, strokeData: newElement });
