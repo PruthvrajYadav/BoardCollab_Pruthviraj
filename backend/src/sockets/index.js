@@ -67,11 +67,23 @@ const initSocket = (server) => {
                 if (room) {
                     socket.emit('canvas-state', room.elements);
                 }
+                
+                // Fetch all current occupants of this room to sync participant list for the newcomer
+                const occupants = await io.in(roomId).fetchSockets();
+                const usersInRoom = occupants.map(s => ({
+                    userId: s.id,
+                    name: s.user?.name || 'Anonymous'
+                }));
+                socket.emit('room-users', usersInRoom);
             } catch (err) {
                 console.error('Error fetching room state:', err);
             }
 
-            socket.to(roomId).emit('user-joined', { userId: socket.id, user: socket.user.id });
+            // Notify others that a new user joined with their full profile
+            socket.to(roomId).emit('user-joined', { 
+                userId: socket.id, 
+                name: socket.user.name || 'Anonymous' 
+            });
         });
 
         // Handle drawing strokes quickly via batches

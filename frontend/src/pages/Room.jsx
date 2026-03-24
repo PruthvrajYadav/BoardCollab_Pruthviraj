@@ -31,8 +31,15 @@ export default function Room() {
             if (user) dispatch(addUser({ userId: newSocket.id, name: user.name }));
         });
 
-        newSocket.on('user-joined', ({ userId, user: joinedUser }) => {
-            dispatch(addUser({ userId, name: joinedUser?.name || 'Anonymous' }));
+        newSocket.on('user-joined', ({ userId, name }) => {
+            dispatch(addUser({ userId, name: name || 'Anonymous' }));
+        });
+
+        newSocket.on('room-users', (usersList) => {
+            // Filter out existing users or just replace the list for the newcomer
+            usersList.forEach(u => {
+                dispatch(addUser({ userId: u.userId, name: u.name }));
+            });
         });
 
         return () => {
