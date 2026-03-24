@@ -72,8 +72,8 @@ export default function Toolbar({ socket, roomId }) {
     };
 
     return (
-        <div className="flex flex-col bg-white rounded-md border border-gray-200 shadow-sm p-2 w-14">
-            <div className="flex flex-col space-y-1">
+        <div className="flex flex-row md:flex-col bg-white rounded-lg border border-gray-200 shadow-lg p-1.5 md:p-2 w-auto md:w-14 items-center">
+            <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1">
                 {tools.map((t) => {
                     const Icon = t.icon;
                     const isActive = tool === t.id;
@@ -90,9 +90,9 @@ export default function Toolbar({ socket, roomId }) {
                 })}
             </div>
 
-            <div className="w-full h-px bg-gray-200 my-2"></div>
+            <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
-            <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-row md:flex-col items-center space-x-1 sm:space-x-2 md:space-x-0 md:space-y-2">
                 {colors.map((c) => (
                     <button
                         key={c}
@@ -104,7 +104,7 @@ export default function Toolbar({ socket, roomId }) {
                 ))}
             </div>
 
-            <div className="w-full h-px bg-gray-200 my-2"></div>
+            <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
             <div className="flex flex-col items-center">
                 <button
@@ -116,9 +116,9 @@ export default function Toolbar({ socket, roomId }) {
                 </button>
             </div>
 
-            <div className="w-full h-px bg-gray-200 my-2"></div>
+            <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
-            <div className="flex flex-col space-y-1 items-center">
+            <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 items-center">
                 <button title="Undo" onClick={handleUndo} className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                     <Undo className="w-5 h-5" />
                 </button>
@@ -127,13 +127,14 @@ export default function Toolbar({ socket, roomId }) {
                 </button>
             </div>
 
-            <div className="w-full h-px bg-gray-200 my-2"></div>
+            <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
             <div className="flex flex-col items-center space-y-1 mt-1 group relative">
                 <button className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                     <Download className="w-5 h-5" />
                 </button>
-                <div className="absolute left-full top-0 ml-1 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto bg-white border border-gray-200 shadow-md rounded p-1">
+
+                <div className="absolute right-0 md:left-full bottom-full md:top-0 mb-2 md:mb-0 md:ml-1 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto bg-white border border-gray-200 shadow-md rounded p-1">
                     <button onClick={() => handleExport('png')} className="px-3 py-1.5 hover:bg-gray-100 text-sm text-gray-700 font-medium rounded text-left whitespace-nowrap">
                         Export PNG
                     </button>
