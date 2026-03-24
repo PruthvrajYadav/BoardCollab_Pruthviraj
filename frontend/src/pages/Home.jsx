@@ -29,7 +29,12 @@ export default function Home() {
             const data = await res.json();
 
             if (res.ok) {
-                dispatch(loginSuccess({ user: { id: data._id, name: data.name, email: data.email }, token: data.token }));
+                if (!isLogin) {
+                    setIsLogin(true);
+                    setFormData({ ...formData, password: '' });
+                } else {
+                    dispatch(loginSuccess({ user: { id: data._id, name: data.name, email: data.email }, token: data.token }));
+                }
             } else {
                 setError(data.message || 'Authentication failed');
             }
@@ -196,14 +201,6 @@ export default function Home() {
                                 </button>
                             </form>
 
-                            <div className="pt-4 border-t border-gray-200 flex justify-center">
-                                <button
-                                    onClick={() => dispatch(logout())}
-                                    className="text-sm font-medium text-red-600 hover:text-red-500"
-                                >
-                                    Log out completely
-                                </button>
-                            </div>
                         </div>
                     )}
                 </div>
