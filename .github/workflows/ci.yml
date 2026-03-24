@@ -45,6 +45,10 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
+      - name: Install Canvas for Vitest JSDOM
+        working-directory: ./frontend
+        run: npm install canvas --no-save
+
       - name: Run Frontend Tests
         working-directory: ./frontend
         run: npm run test
