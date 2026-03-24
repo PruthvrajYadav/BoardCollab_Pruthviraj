@@ -72,7 +72,7 @@ export default function Toolbar({ socket, roomId }) {
     };
 
     return (
-        <div className="flex flex-row md:flex-col bg-white rounded-xl border border-gray-200 shadow-xl p-1.5 md:p-2 w-auto max-w-full md:w-14 items-center overflow-x-auto no-scrollbar">
+        <div className="flex flex-row md:flex-col bg-white rounded-xl border border-gray-200 shadow-xl p-1 md:p-2 w-auto max-w-full md:w-14 items-center overflow-x-auto no-scrollbar">
 
             <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 flex-shrink-0">
                 {tools.map((t) => {
@@ -83,10 +83,11 @@ export default function Toolbar({ socket, roomId }) {
                             key={t.id}
                             title={t.label}
                             onClick={() => dispatch(setTool(t.id))}
-                            className={`p-2 rounded flex justify-center items-center transition-colors ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
+                            className={`p-1.5 md:p-2 rounded flex justify-center items-center transition-colors ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
                         >
-                            <Icon className="w-5 h-5" />
+                            <Icon className="w-4 h-4 md:w-5 md:h-5" />
                         </button>
+
                     );
                 })}
             </div>
@@ -98,7 +99,7 @@ export default function Toolbar({ socket, roomId }) {
                     <button
                         key={c}
                         onClick={() => dispatch(setColor(c))}
-                        className={`w-6 h-6 rounded-full border-2 transition-transform ${color === c ? 'border-blue-500 scale-110 shadow-sm' : 'border-gray-200 hover:scale-105'}`}
+                        className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 transition-transform ${color === c ? 'border-blue-500 scale-110 shadow-sm' : 'border-gray-200 hover:scale-105'}`}
                         style={{ backgroundColor: c }}
                         title={`Color: ${c}`}
                     />
@@ -111,29 +112,32 @@ export default function Toolbar({ socket, roomId }) {
                 <button
                     title="AI Smart Refine"
                     onClick={() => dispatch(toggleSmartMode())}
-                    className={`p-2 rounded flex justify-center items-center transition-all ${isSmartMode ? 'bg-purple-100 text-purple-600 shadow-inner' : 'text-gray-400 hover:bg-gray-100'}`}
+                    className={`p-1.5 md:p-2 rounded flex justify-center items-center transition-all ${isSmartMode ? 'bg-purple-100 text-purple-600 shadow-inner' : 'text-gray-400 hover:bg-gray-100'}`}
                 >
-                    <Sparkles className={`w-5 h-5 ${isSmartMode ? 'animate-pulse' : ''}`} />
+                    <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${isSmartMode ? 'animate-pulse' : ''}`} />
                 </button>
+
             </div>
 
             <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
             <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 items-center flex-shrink-0">
-                <button title="Undo" onClick={handleUndo} className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
-                    <Undo className="w-5 h-5" />
+                <button title="Undo" onClick={handleUndo} className="p-1.5 md:p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
+                    <Undo className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
-                <button title="Redo" onClick={handleRedo} className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
-                    <Redo className="w-5 h-5" />
+                <button title="Redo" onClick={handleRedo} className="p-1.5 md:p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
+                    <Redo className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
+
             </div>
 
             <div className="w-px md:w-full h-8 md:h-px bg-gray-200 mx-2 md:mx-0 md:my-2"></div>
 
             <div className="flex flex-col items-center space-y-1 mt-1 group relative flex-shrink-0">
-                <button className="p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
-                    <Download className="w-5 h-5" />
+                <button className="p-1.5 md:p-2 rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900">
+                    <Download className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
+
 
                 <div className="absolute right-0 md:left-full bottom-full md:top-0 mb-2 md:mb-0 md:ml-1 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto bg-white border border-gray-200 shadow-md rounded p-1">
                     <button onClick={() => handleExport('png')} className="px-3 py-1.5 hover:bg-gray-100 text-sm text-gray-700 font-medium rounded text-left whitespace-nowrap">
