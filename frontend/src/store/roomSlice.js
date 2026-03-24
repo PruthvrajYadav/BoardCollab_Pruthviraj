@@ -7,6 +7,7 @@ const initialState = {
     redoStack: [],
     tool: 'pencil', // pencil, rectangle, circle, text
     color: '#000000', // Changed to black so initial drawings are visible on white canvas
+    isSmartMode: false,
 };
 
 const roomSlice = createSlice({
@@ -73,12 +74,15 @@ const roomSlice = createSlice({
         setColor: (state, action) => {
             state.color = action.payload;
         },
+        toggleSmartMode: (state) => {
+            state.isSmartMode = !state.isSmartMode;
+        },
     },
 });
 
 export const {
     setRoom, setUsers, addUser, setElements, addElement,
     updateOrAddElement, removeElement, pushToRedoStack,
-    popFromRedoStack, clearRedoStack, setTool, setColor
+    popFromRedoStack, clearRedoStack, setTool, setColor, toggleSmartMode
 } = roomSlice.actions;
 export default roomSlice.reducer;

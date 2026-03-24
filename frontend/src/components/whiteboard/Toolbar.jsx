@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setTool, setColor, removeElement, pushToRedoStack, popFromRedoStack, addElement } from '../../store/roomSlice';
-import { Pencil, Square, Circle, Type, Pointer, Eraser, Undo, Redo, Download } from 'lucide-react';
+import { Pencil, Square, Circle, Type, Pointer, Eraser, Undo, Redo, Download, Sparkles } from 'lucide-react';
+import { setTool, setColor, removeElement, pushToRedoStack, popFromRedoStack, addElement, toggleSmartMode } from '../../store/roomSlice';
 
 const tools = [
     { id: 'pointer', icon: Pointer, label: 'Select' },
@@ -15,7 +15,7 @@ const tools = [
 const colors = ['#000000', '#ff3b30', '#4cd964', '#007aff', '#ffcc00', '#5856d6'];
 
 export default function Toolbar({ socket, roomId }) {
-    const { tool, color, elements, redoStack } = useSelector((state) => state.room);
+    const { tool, color, elements, redoStack, isSmartMode } = useSelector((state) => state.room);
     const { user, token } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
@@ -102,6 +102,18 @@ export default function Toolbar({ socket, roomId }) {
                         title={`Color: ${c}`}
                     />
                 ))}
+            </div>
+
+            <div className="w-full h-px bg-gray-200 my-2"></div>
+
+            <div className="flex flex-col items-center">
+                <button
+                    title="AI Smart Refine"
+                    onClick={() => dispatch(toggleSmartMode())}
+                    className={`p-2 rounded flex justify-center items-center transition-all ${isSmartMode ? 'bg-purple-100 text-purple-600 shadow-inner' : 'text-gray-400 hover:bg-gray-100'}`}
+                >
+                    <Sparkles className={`w-5 h-5 ${isSmartMode ? 'animate-pulse' : ''}`} />
+                </button>
             </div>
 
             <div className="w-full h-px bg-gray-200 my-2"></div>
