@@ -18,10 +18,14 @@ const initSocket = (server) => {
     // Setup Redis Pub/Sub Adapter for Horizontal Scalability (50+ concurrent users per room across nodes)
     const pubClient = redisClient.duplicate();
     const subClient = redisClient.duplicate();
-    Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
-        io.adapter(createAdapter(pubClient, subClient));
-        console.log('Socket.io Redis Adapter configured for scale');
-    });
+    Promise.all([pubClient.connect(), subClient.connect()])
+        .then(() => {
+            io.adapter(createAdapter(pubClient, subClient));
+            console.log('Socket.io Redis Adapter configured for scale');
+        })
+        .catch(err => {
+            console.log('Redis PubSub not available. Running Socket.io in single-node Memory mode.');
+        });
 
     // JWT Authentication middleware for sockets
     io.use((socket, next) => {
@@ -54,7 +58,9 @@ const initSocket = (server) => {
             console.log(`Client ${socket.id} joined room: ${roomId}`);
 
             // Update session with active room using TTL
-            await redisClient.setEx(`room:${roomId}:${socket.id}`, 3600, socket.user.id);
+            try {
+                await redisClient.setEx(`room:${roomId}:${socket.id}`, 3600, socket.user.id);
+            } catch (err) {}
 
             try {
                 const room = await Room.findOne({ roomId });
@@ -83,7 +89,9 @@ const initSocket = (server) => {
         // Heartbeat mechanism tied to Redis TTL updates
         socket.on('ping', async () => {
             // Refresh session TTL explicitly per heartbeat ping
-            await redisClient.expire(`session:${socket.id}`, 3600);
+            try {
+                await redisClient.expire(`session:${socket.id}`, 3600);
+            } catch (err) {}
             socket.emit('pong');
         });
 
