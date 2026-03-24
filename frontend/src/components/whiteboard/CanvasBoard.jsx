@@ -147,6 +147,8 @@ export default function CanvasBoard({ socket, roomId }) {
     const lastEmitTime = useRef(0);
 
     const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
+    const [textInput, setTextInput] = useState(null); // { x, y }
+
 
     useEffect(() => {
         const handleResize = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
@@ -179,17 +181,18 @@ export default function CanvasBoard({ socket, roomId }) {
         const pos = e.target.getStage().getPointerPosition();
         const newId = Date.now().toString() + Math.random().toString(36).substring(7);
 
+        console.log('MouseDown Tool:', tool, 'Pos:', pos);
+
         if (tool === 'text') {
-            const textVal = window.prompt("Enter text:");
-            if (textVal) {
-                const textElement = {
-                    id: newId, userId: user?.id, tool, color, x: pos.x, y: pos.y, text: textVal
-                };
-                dispatch(addElement(textElement));
-                socket.emit('draw-stroke', { roomId, strokeData: textElement });
-            }
+            console.log('Activating Text Input at:', pos);
+            // Prevent the event from bubbling to avoid immediate blur/close
+            if (e.evt) e.evt.preventDefault();
+            setTextInput({ x: pos.x, y: pos.y });
             return;
         }
+
+
+
 
         isDrawing.current = true;
         const isFreehand = tool === 'pencil' || tool === 'eraser';
@@ -278,6 +281,29 @@ export default function CanvasBoard({ socket, roomId }) {
         }
     }, [elements, dispatch, socket, roomId]);
 
+    const handleTextSubmit = useCallback((e) => {
+        const textVal = e.target.value;
+        console.log('Text Submit:', textVal, 'Current State:', textInput);
+        if (textVal && textInput) {
+            const newId = Date.now().toString() + Math.random().toString(36).substring(7);
+            const textElement = {
+                id: newId, 
+                userId: user?.id, 
+                tool: 'text', 
+                color, 
+                x: textInput.x, 
+                y: textInput.y, 
+                text: textVal 
+            };
+            dispatch(addElement(textElement));
+            socket.emit('draw-stroke', { roomId, strokeData: textElement });
+            console.log('Text element added and emitted');
+        }
+        setTextInput(null);
+    }, [textInput, user, color, dispatch, socket, roomId]);
+
+
+
 
     // Standard Layer with listening dependent on tool
     const stableLayer = useMemo(() => {
@@ -299,9 +325,48 @@ export default function CanvasBoard({ socket, roomId }) {
     }, [elements, tool, handleElementDragEnd]);
 
 
+    console.log('Rendering CanvasBoard. textInput:', textInput);
+
     return (
-        <div className="w-full h-full bg-white overflow-hidden cursor-crosshair">
+        <div className="w-full h-full bg-white overflow-hidden cursor-crosshair relative border border-red-500">
+            {textInput && (
+                <div 
+                    key={`text-input-${textInput.x}-${textInput.y}`}
+                    style={{ 
+                        position: 'absolute', 
+                        top: textInput.y - 12,
+                        left: textInput.x, 
+                        zIndex: 10000,
+                        pointerEvents: 'auto'
+                    }}
+                >
+                    <input
+                        autoFocus
+                        placeholder="Type text here..."
+                        className="bg-white border-2 border-blue-500 outline-none font-sans px-2 py-1 shadow-2xl rounded"
+                        style={{ color: color, fontSize: '24px', minWidth: '200px' }}
+                        onBlur={(e) => {
+                            // Only submit if we actually have a value or if it was a real blur
+                            console.log('Input Blur. Value:', e.target.value);
+                            handleTextSubmit(e);
+                        }}
+                        onMouseDown={(e) => e.stopPropagation()} // Prevent stage from reacting to clicks inside input
+                        onTouchStart={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleTextSubmit(e);
+                            } else if (e.key === 'Escape') {
+                                setTextInput(null);
+                            }
+                        }}
+                    />
+
+                </div>
+            )}
+
+
             <Stage
+
                 width={dimensions.width}
                 height={dimensions.height}
                 onMouseDown={handleMouseDown}

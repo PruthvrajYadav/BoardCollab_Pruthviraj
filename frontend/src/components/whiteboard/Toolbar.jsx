@@ -72,7 +72,8 @@ export default function Toolbar({ socket, roomId }) {
     };
 
     return (
-        <div className="flex flex-row md:flex-col bg-white rounded-xl border border-gray-200 shadow-xl p-1 md:p-2 w-auto max-w-full md:w-14 items-center overflow-x-auto no-scrollbar">
+        <div className="flex flex-row md:flex-col bg-white rounded-xl border border-gray-200 shadow-xl p-2 md:p-2 w-auto max-w-[95vw] md:w-14 items-center overflow-x-auto no-scrollbar">
+
 
             <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 flex-shrink-0">
                 {tools.map((t) => {
@@ -83,10 +84,11 @@ export default function Toolbar({ socket, roomId }) {
                             key={t.id}
                             title={t.label}
                             onClick={() => dispatch(setTool(t.id))}
-                            className={`p-1.5 md:p-2 rounded flex justify-center items-center transition-colors ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
+                            className={`p-2.5 md:p-2 rounded flex justify-center items-center transition-colors ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
                         >
-                            <Icon className="w-4 h-4 md:w-5 md:h-5" />
+                            <Icon className="w-5 h-5 md:w-5 md:h-5" />
                         </button>
+
 
                     );
                 })}
@@ -99,10 +101,11 @@ export default function Toolbar({ socket, roomId }) {
                     <button
                         key={c}
                         onClick={() => dispatch(setColor(c))}
-                        className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 transition-transform ${color === c ? 'border-blue-500 scale-110 shadow-sm' : 'border-gray-200 hover:scale-105'}`}
+                        className={`w-6 h-6 md:w-6 md:h-6 rounded-full border-2 transition-transform ${color === c ? 'border-blue-500 scale-110 shadow-sm' : 'border-gray-200 hover:scale-105'}`}
                         style={{ backgroundColor: c }}
                         title={`Color: ${c}`}
                     />
+
                 ))}
             </div>
 
@@ -112,10 +115,11 @@ export default function Toolbar({ socket, roomId }) {
                 <button
                     title="AI Smart Refine"
                     onClick={() => dispatch(toggleSmartMode())}
-                    className={`p-1.5 md:p-2 rounded flex justify-center items-center transition-all ${isSmartMode ? 'bg-purple-100 text-purple-600 shadow-inner' : 'text-gray-400 hover:bg-gray-100'}`}
+                    className={`p-2.5 md:p-2 rounded flex justify-center items-center transition-all ${isSmartMode ? 'bg-purple-100 text-purple-600 shadow-inner' : 'text-gray-400 hover:bg-gray-100'}`}
                 >
-                    <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${isSmartMode ? 'animate-pulse' : ''}`} />
+                    <Sparkles className={`w-5 h-5 md:w-5 md:h-5 ${isSmartMode ? 'animate-pulse' : ''}`} />
                 </button>
+
 
             </div>
 
